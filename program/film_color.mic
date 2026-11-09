@@ -5,13 +5,14 @@
 ; 
 ;  Register: R0 Warten auf REQ / Null, R1 ACK-Code, R2 x bzw. Datennibble, R3 y
 ;  Bild: Register 0-7 in den Speicherregistern 0-7, Register 8-F in R8-RF
-;  Befehle: ACK 4 (x,y) Cursor 1/Punkt, ACK 6 (x,y) Rechteck, ACK 14 Farbe, ACK 13 Farbmatrix sichern/zurueckholen
+;  Befehle: ACK 4 (x,y) Cursor 1/Punkt, ACK 6 (x,y) Rechteck, ACK 14 Farbe, ACK 13 Stapel (push/peek der Farbmatrix)
 ;  Zeichenart ohne +8: nur Farbmatrix (sichtbar mit dem naechsten Bild)
-;  Farben: Am Start wird die Farbmatrix gesichert (z. B. die Farben aus dem Userscript film_color.py,
-;  das deshalb VOR dem Film laufen muss). Nach jeder Szene kommen genau diese Farben zurueck.
+;  Farben: Am Start kommt die Farbmatrix auf den Stapel (push), z. B. die Farben aus dem Userscript
+;  film_color.py, das deshalb VOR dem Film laufen muss. Nach jeder Szene holt peek genau diese
+;  Farben zurueck; sie bleiben auf dem Stapel fuer den naechsten Durchlauf.
 ;
 F02 ; 00 start:       DISOUT  Anzeige aus
-BED ; 01              Farbmatrix sichern (ACK 13 / 1)
+BED ; 01              Farbmatrix auf den Stapel (ACK 13 / 1 = push)
 F08 ; 02 loop:        CLEAR
 F0D ; 03              EXRL
 F08 ; 04              CLEAR   R0-RF und Speicherregister 0-7 geloescht (Speicherregister 8-F wird nicht benutzt, kein EXRM noetig)
@@ -165,7 +166,7 @@ BE0 ; 95
 BC8 ; 98
 16D ; 99
 BC8 ; 9A
-BEC ; 9B              gesicherte Farbmatrix zurueckholen (ACK 13 / 5)
+BEC ; 9B              Farbmatrix vom Stapel zurueckholen, bleibt oben (ACK 13 / 9 = peek)
 BF8 ; 9C
 BFC ; 9D
 BF8 ; 9E
@@ -208,7 +209,7 @@ BE0 ; C1
 F77 ; C3
 149 ; C4
 BC8 ; C5
-BEC ; C6              gesicherte Farbmatrix zurueckholen (ACK 13 / 5)
+BEC ; C6              Farbmatrix vom Stapel zurueckholen, bleibt oben (ACK 13 / 9 = peek)
 C02 ; C7
 FD0 ; C8 bild:        DIN R0     warten auf REQ
 310 ; C9              ANDI 1,R0
@@ -246,9 +247,9 @@ CEF ; E3
 512 ; E9 f_rot:       R2 += 1   -> magenta 8, tuerkis 5, gruen 4, gelb 3, orange 2, rot 1
 1E1 ; EA farbe:       R1 = 14: aktive Farbe
 CEF ; EB
-542 ; EC zurueck:     R2 += 4   (R2 ist hier immer 0)
-512 ; ED sichern:     R2 += 1   -> zurueck 5, sichern 1
-1D1 ; EE              R1 = 13: Farbmatrix sichern/zurueckholen
+582 ; EC zurueck:     R2 += 8   (R2 ist hier immer 0)
+512 ; ED sichern:     R2 += 1   -> zurueck 9 (peek), sichern 1 (push)
+1D1 ; EE              R1 = 13: Stapel
 FD0 ; EF cmd:         DIN R0     warten auf REQ
 310 ; F0              ANDI 1,R0
 EEF ; F1              BRZ

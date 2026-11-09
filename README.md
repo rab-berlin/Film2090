@@ -11,4 +11,4 @@ Busch Microtronic 2090 goes to Hollywood...
 2. [film_color.mic](program/film_color.mic) mit **Upload** zum Microtronic übertragen.
 3. **LED on** drücken und den Film auf dem Microtronic starten.
 
-Die Reihenfolge ist wichtig: Der Film sichert am Anfang die Farben aus dem Userscript und holt sie nach jeder Szene wieder zurück (Matrix-Befehl ACK 13).
+Die Reihenfolge ist wichtig: Der Film legt am Anfang die Farben aus dem Userscript auf den Stapel (push) und holt sie nach jeder Szene wieder zurück (peek, Matrix-Befehl ACK 13).
