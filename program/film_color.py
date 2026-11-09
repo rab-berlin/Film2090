@@ -12,4 +12,3 @@ colors = [
 ]
 
 setColors(colors)
-setColors(colors)
