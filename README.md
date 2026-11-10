@@ -19,7 +19,7 @@ Im Emulator2090 läuft der Film ohne das Userscript, dann sind alle Pixel rot (S
 
 ## Das Userscript
 
-`film_color.py` besteht aus einer Liste mit 64 Farbnamen, einer je LED, Zeile für Zeile von unten nach oben (siehe Datei: türkis, orange, gelb, rot, blau, weiß), und einem einzigen Aufruf `setColors(colors)`. Die Farbe jedes Pixels steht damit fest, bevor der Film beginnt. Der Film selbst muss deshalb nie eine Farbe wählen und braucht nur Pixel an- und auszuschalten.
+`film_color.py` besteht aus einer Liste mit 64 Farbnamen, einer je LED (türkis, orange, gelb, rot, blau, weiß), und einem einzigen Aufruf `setColors(colors)`. Damit steht die Grundfarbe jedes Pixels fest, bevor der Film beginnt. Zusätzlich wählt der Film selbst mit ACK 14 Zeichenfarben (magenta, türkis, grün, gelb, orange) für gezeichnete Punkte und Flächen.
 
 ## Technik
 
